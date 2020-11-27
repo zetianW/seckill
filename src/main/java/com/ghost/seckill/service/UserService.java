@@ -1,5 +1,6 @@
 package com.ghost.seckill.service;
 
+import com.ghost.seckill.error.BusinessException;
 import com.ghost.seckill.service.model.UserModel;
 
 /**
@@ -14,4 +15,5 @@ public interface UserService {
      * @param id
      */
     UserModel getUserById(Integer id);
+    void register(UserModel userModel) throws BusinessException;
 }
