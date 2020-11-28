@@ -39,32 +39,32 @@ public class UserServiceImpl implements UserService {
         // 根据主键ID获取UserDO的对象
         UserDO userDo = userDOMapper.selectByPrimaryKey(id);
 
-        if(userDo == null){
+        if (userDo == null) {
             return null;
         }
         //通过用户id获取对应的用户加密密码信息
-        UserPasswordDo userPasswordDo =userPasswordDoMapper.selectByUserId(userDo.getId());
-    return convertFromDataObject(userDo,userPasswordDo);
+        UserPasswordDo userPasswordDo = userPasswordDoMapper.selectByUserId(userDo.getId());
+        return convertFromDataObject(userDo, userPasswordDo);
     }
 
     @Override
     @Transactional
     public void register(UserModel userModel) throws BusinessException {
-        if(userModel == null){
+        if (userModel == null) {
             throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR);
         }
-        if(StringUtils.isEmpty(userModel.getName())||userModel.getGender()==null
-        ||userModel.getAge()==null||StringUtils.isEmpty(userModel.getTelphone())){
+        if (StringUtils.isEmpty(userModel.getName()) || userModel.getGender() == null
+                || userModel.getAge() == null || StringUtils.isEmpty(userModel.getTelphone())) {
             throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR);
         }
 
 
         //实现model->dataObject方法
         UserDO userDO = convertFromModel(userModel);
-        try{
+        try {
             userDOMapper.insertSelective(userDO);
-        }catch (DuplicateKeyException ex){
-            throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR,"手机号已重复注册");
+        } catch (DuplicateKeyException ex) {
+            throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR, "手机号已重复注册");
         }
 
         UserPasswordDo userPasswordDo = convertPasswordFromModel(userModel);
@@ -72,8 +72,8 @@ public class UserServiceImpl implements UserService {
         return;
     }
 
-    private UserPasswordDo convertPasswordFromModel(UserModel userModel){
-        if(userModel==null){
+    private UserPasswordDo convertPasswordFromModel(UserModel userModel) {
+        if (userModel == null) {
             return null;
         }
         UserPasswordDo userPasswordDo = new UserPasswordDo();
@@ -81,22 +81,23 @@ public class UserServiceImpl implements UserService {
         userPasswordDo.setUserId(userModel.getId());
         return userPasswordDo;
     }
-    private UserDO convertFromModel(UserModel userModel){
-        if(userModel==null){
+
+    private UserDO convertFromModel(UserModel userModel) {
+        if (userModel == null) {
             return null;
         }
         UserDO userDO = new UserDO();
-        BeanUtils.copyProperties(userModel,userDO);
-
+        BeanUtils.copyProperties(userModel, userDO);
         return userDO;
     }
-    private UserModel convertFromDataObject(UserDO userDO, UserPasswordDo userPasswordDo){
-        if(userDO == null){
+
+    private UserModel convertFromDataObject(UserDO userDO, UserPasswordDo userPasswordDo) {
+        if (userDO == null) {
             return null;
         }
         UserModel userModel = new UserModel();
-        BeanUtils.copyProperties(userDO,userModel);
-        if(userPasswordDo == null){
+        BeanUtils.copyProperties(userDO, userModel);
+        if (userPasswordDo == null) {
             return null;
         }
         userModel.setEncrptPassword(userPasswordDo.getEncrptPassword());
