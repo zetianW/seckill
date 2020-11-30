@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Description
+ * Description 商品信息
  *
  * @author Zetian
  * @date 30, 11 2020
