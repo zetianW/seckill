@@ -3,6 +3,7 @@ package com.ghost.seckill;
 
 import com.ghost.seckill.dao.UserDOMapper;
 import com.ghost.seckill.dataobject.UserDO;
+import com.ghost.seckill.util.CommonUtils;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -36,6 +37,7 @@ public class SecKillApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(SecKillApplication.class,args);
+        System.err.println(CommonUtils.getTel());
     }
 
 }

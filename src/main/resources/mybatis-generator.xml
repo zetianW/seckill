@@ -8,9 +8,9 @@
     <context id="DB2Tables" targetRuntime="MyBatis3">
         <!--数据库链接地址账号密码-->
         <jdbcConnection driverClass="com.mysql.jdbc.Driver"
-                        connectionURL="jdbc:mysql://127.0.0:3306/seckill"
+                        connectionURL="jdbc:mysql://localhost:3306/seckill"
                         userId="root"
-                        password="123">
+                        password="root">
         </jdbcConnection>
 
         <!--生成DataObject类存放位置-->
@@ -42,6 +42,18 @@
                enableDeleteByExample="false"
                enableSelectByExample="false"
                selectByExampleQueryId="false"></table>
+        <table tableName="item" domainObjectName="ItemDO"
+               enableCountByExample="false"
+               enableUpdateByExample="false"
+               enableDeleteByExample="false"
+               enableSelectByExample="false"
+               selectByExampleQueryId="false" ></table>
+        <table tableName="item_stock" domainObjectName="ItemStockDO"
+               enableCountByExample="false"
+               enableUpdateByExample="false"
+               enableDeleteByExample="false"
+               enableSelectByExample="false"
+               selectByExampleQueryId="false" ></table>
         <!--
                 <table tableName="user_info" domainObjectName="UserDO"
                        enableCountByExample="false"
@@ -56,22 +68,6 @@
                        enableSelectByExample="false"
                        selectByExampleQueryId="false" ></table>
         -->
-
-        <!--
-                <table tableName="item" domainObjectName="ItemDO"
-                       enableCountByExample="false"
-                       enableUpdateByExample="false"
-                       enableDeleteByExample="false"
-                       enableSelectByExample="false"
-                       selectByExampleQueryId="false" ></table>
-                <table tableName="item_stock" domainObjectName="ItemStockDO"
-                       enableCountByExample="false"
-                       enableUpdateByExample="false"
-                       enableDeleteByExample="false"
-                       enableSelectByExample="false"
-                       selectByExampleQueryId="false" ></table>
-        -->
-
         <!--
                 <table tableName="order_info" domainObjectName="OrderDO"
                        enableCountByExample="false"

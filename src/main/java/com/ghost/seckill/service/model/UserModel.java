@@ -1,5 +1,10 @@
 package com.ghost.seckill.service.model;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 /**
  * Description
  *
@@ -8,12 +13,19 @@ package com.ghost.seckill.service.model;
  */
 public class UserModel {
     private Integer id;
+    @NotBlank(message = "用户名不能为空")
     private String name;
+    @NotNull(message = "性别为空")
     private Byte gender;
+    @NotNull(message = "年龄为空")
+    @Min(value = 0,message = "年龄不饿能小于0")
+    @Max(value = 100,message = "年龄不能大于100")
     private Integer age;
+    @NotBlank(message = "手机号不能为空")
     private String telphone;
     private String registerMode;
     private String thirdPartyId;
+    @NotBlank(message = "密码不能为空")
     private String encrptPassword;
 
     public String getEncrptPassword() {
@@ -83,7 +95,5 @@ public class UserModel {
     public void setThirdPartyId(String thirdPartyId) {
         this.thirdPartyId = thirdPartyId;
     }
-
-
 
 }

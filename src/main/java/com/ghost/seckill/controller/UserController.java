@@ -1,6 +1,5 @@
 package com.ghost.seckill.controller;
 
-import com.alibaba.druid.util.StringUtils;
 import com.ghost.seckill.common.SystemDefault;
 import com.ghost.seckill.controller.viewobject.UserView;
 import com.ghost.seckill.error.BusinessException;
@@ -8,6 +7,7 @@ import com.ghost.seckill.error.EmBusinessError;
 import com.ghost.seckill.response.CommonReturnType;
 import com.ghost.seckill.service.UserService;
 import com.ghost.seckill.service.model.UserModel;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -39,43 +39,6 @@ public class UserController extends BaseController {
     private HttpServletRequest httpServletRequest;
 
     /**
-     * 用户注册接口
-     */
-    @RequestMapping(value = "/register", method = {RequestMethod.POST}, consumes = {CONTENT_TYPE_FORMED})
-    @ResponseBody
-    public CommonReturnType register(@RequestParam(name = "telphone") String telphone,
-                                     @RequestParam(name = "otpCode") String otpCode,
-                                     @RequestParam(name = "name") String name,
-                                     @RequestParam(name = "gender") Integer gender,
-                                     @RequestParam(name = "age") Integer age,
-                                     @RequestParam(name = "password") String password) throws BusinessException, UnsupportedEncodingException, NoSuchAlgorithmException {
-        //验证手机号和对应的otpCode相符合
-        String inSessionOtpCode = (String) httpServletRequest.getSession().getAttribute(telphone);
-        if (!StringUtils.equals(otpCode, inSessionOtpCode)) {
-            throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR, "短信验证码不符合");
-        }
-
-        //用户的注册流程
-        UserModel userModel = new UserModel();
-        userModel.setName(name);
-        userModel.setGender(new Byte(String.valueOf(gender.intValue())));
-        userModel.setAge(age);
-        userModel.setTelphone(telphone);
-        userModel.setRegisterMode("byphone");
-        userModel.setEncrptPassword(this.EncodeByMd5(password));
-        userService.register(userModel);
-        return CommonReturnType.creat(null);
-    }
-    public String EncodeByMd5(String str) throws NoSuchAlgorithmException, UnsupportedEncodingException {
-        //确定计算方法
-        MessageDigest md5 = MessageDigest.getInstance("MD5");
-        BASE64Encoder base64Encoder = new BASE64Encoder();
-        //加密字符串
-        String newStr = base64Encoder.encode(md5.digest(str.getBytes(SystemDefault.DEFAULT_ENCODING)));
-        return newStr;
-    }
-
-    /**
      * 用户获取otp短信接口
      *
      * @param telphone
@@ -98,6 +61,69 @@ public class UserController extends BaseController {
         // 在一般程序开发中，不能将这些otpCode等敏感信息打印到控制台，此处打印时为了方便查看
         System.out.println("telphone =" + telphone + "****otpCode = " + otpCode);
 
+        return CommonReturnType.creat(null);
+    }
+
+    /**
+     * 用户注册接口
+     */
+    @RequestMapping(value = "/register", method = {RequestMethod.POST}, consumes = {CONTENT_TYPE_FORMED})
+    @ResponseBody
+    public CommonReturnType register(@RequestParam(name = "telphone") String telphone,
+                                     @RequestParam(name = "otpCode") String otpCode,
+                                     @RequestParam(name = "name") String name,
+                                     @RequestParam(name = "gender") Integer gender,
+                                     @RequestParam(name = "age") Integer age,
+                                     @RequestParam(name = "password") String password)
+            throws BusinessException, UnsupportedEncodingException, NoSuchAlgorithmException {
+
+
+        //验证手机号和对应的otpCode相符合
+        String inSessionOtpCode = (String) httpServletRequest.getSession().getAttribute(telphone);
+        if (!StringUtils.equals(otpCode, inSessionOtpCode)) {
+            throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR, "短信验证码不符合");
+        }
+
+        //用户的注册流程
+        UserModel userModel = new UserModel();
+        userModel.setName(name);
+        userModel.setGender(new Byte(String.valueOf(gender.intValue())));
+        userModel.setAge(age);
+        userModel.setTelphone(telphone);
+        userModel.setRegisterMode("byPhone");
+        userModel.setEncrptPassword(this.encodeByMd5(password));
+        userService.register(userModel);
+        return CommonReturnType.creat(null);
+    }
+
+    /**
+     * 用户接口登录
+     *
+     * @param telphone
+     * @param password
+     * @return
+     * @throws BusinessException
+     * @throws UnsupportedEncodingException
+     * @throws NoSuchAlgorithmException
+     */
+    @RequestMapping(value = "/login", method = {RequestMethod.POST}, consumes = {CONTENT_TYPE_FORMED})
+    @ResponseBody
+    public CommonReturnType login(@RequestParam("telphone") String telphone,
+                                  @RequestParam("password") String password) throws BusinessException, UnsupportedEncodingException, NoSuchAlgorithmException {
+        //校验入参
+        if (telphone == null || "".equals(telphone)) {
+            throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR);
+        }
+
+        if (password == null || "".equals(password)) {
+            throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR);
+        }
+        //用户登录服务，用来校验用户登录是否合法
+        UserModel userModel = userService.validateLogin(telphone, this.encodeByMd5(password));
+        //将登录凭证加入到用户登录成功的session中
+        httpServletRequest.getSession().setAttribute("IS_LOGIN", true);
+
+        httpServletRequest.getSession().setAttribute("LOGIN_USER", userModel);
         return CommonReturnType.creat(null);
     }
 
@@ -126,4 +152,22 @@ public class UserController extends BaseController {
         BeanUtils.copyProperties(userModel, userView);
         return userView;
     }
+
+    /**
+     * md5加密密码
+     *
+     * @param str
+     * @return
+     * @throws NoSuchAlgorithmException
+     * @throws UnsupportedEncodingException
+     */
+    private String encodeByMd5(String str) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+        //确定计算方法
+        MessageDigest md5 = MessageDigest.getInstance("MD5");
+        BASE64Encoder base64Encoder = new BASE64Encoder();
+        //加密字符串
+        String newStr = base64Encoder.encode(md5.digest(str.getBytes(SystemDefault.DEFAULT_ENCODING)));
+        return newStr;
+    }
+
 }
