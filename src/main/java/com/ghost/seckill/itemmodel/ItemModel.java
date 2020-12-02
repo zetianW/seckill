@@ -1,5 +1,7 @@
 package com.ghost.seckill.itemmodel;
 
+import com.ghost.seckill.service.model.PromoModel;
+
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -35,7 +37,7 @@ public class ItemModel {
      * 描述
      */
     @NotBlank(message = "描述信息不能为空")
-    private String descriptin;
+    private String description;
     /**
      * 销量
      */
@@ -46,6 +48,21 @@ public class ItemModel {
      */
     @NotBlank(message = "图片不能为空")
     private String imgUrl;
+
+    /**
+     * 使用聚合模型，就是将promoModel冗余进来,如果其不为空，就证明还有未结束的秒杀活动
+     * @return
+     */
+    private PromoModel promoModel;
+
+    public PromoModel getPromoModel() {
+        return promoModel;
+    }
+
+    public void setPromoModel(PromoModel promoModel) {
+        this.promoModel = promoModel;
+    }
+
     public Integer getId() {
         return id;
     }
@@ -78,12 +95,12 @@ public class ItemModel {
         this.stock = stock;
     }
 
-    public String getDescriptin() {
-        return descriptin;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDescriptin(String descriptin) {
-        this.descriptin = descriptin;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Integer getSale() {

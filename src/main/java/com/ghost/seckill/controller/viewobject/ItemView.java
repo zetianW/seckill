@@ -1,8 +1,7 @@
 package com.ghost.seckill.controller.viewobject;
 
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import org.joda.time.DateTime;
+
 import java.math.BigDecimal;
 
 /**
@@ -31,7 +30,7 @@ public class ItemView {
     /**
      * 描述
      */
-    private String descriptin;
+    private String description;
     /**
      * 销量
      */
@@ -41,6 +40,62 @@ public class ItemView {
      * 商品图片的URL
      */
     private String imgUrl;
+
+    /**
+     * 记录商品是否在秒杀活动中  状态0：表示没有秒杀活动  状态1：表示秒杀活动待开始 状态2：表示正在进行
+     * @return
+     */
+    private Integer promoStatus;
+
+    /**
+     * 秒杀活动价格
+     * @return
+     */
+    private BigDecimal promoPrice;
+
+    /**
+     * 秒杀活动ID
+     * @return
+     */
+    private Integer promoId;
+
+    /**
+     * 秒杀活动开始时间
+     * @return
+     */
+    private DateTime startDate;
+
+    public Integer getPromoStatus() {
+        return promoStatus;
+    }
+
+    public void setPromoStatus(Integer promoStatus) {
+        this.promoStatus = promoStatus;
+    }
+
+    public BigDecimal getPromoPrice() {
+        return promoPrice;
+    }
+
+    public void setPromoPrice(BigDecimal promoPrice) {
+        this.promoPrice = promoPrice;
+    }
+
+    public Integer getPromoId() {
+        return promoId;
+    }
+
+    public void setPromoId(Integer promoId) {
+        this.promoId = promoId;
+    }
+
+    public DateTime getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(DateTime startDate) {
+        this.startDate = startDate;
+    }
 
     public Integer getId() {
         return id;
@@ -74,12 +129,12 @@ public class ItemView {
         this.stock = stock;
     }
 
-    public String getDescriptin() {
-        return descriptin;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDescriptin(String descriptin) {
-        this.descriptin = descriptin;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Integer getSale() {

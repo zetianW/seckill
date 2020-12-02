@@ -24,6 +24,7 @@
     -->
     id, name, gender, age, telphone, regisit_mode, third_party_id
   </sql>
+
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultType="com.ghost.seckill.dataobject.UserDO">
     <!--
       WARNING - @mbg.generated
@@ -35,6 +36,13 @@
     from user_info
     where id = #{id,jdbcType=INTEGER}
   </select>
+  <select id="selectByTelphone" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from user_info
+    where telphone = #{telphone,jdbcType=VARCHAR}
+  </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     <!--
       WARNING - @mbg.generated

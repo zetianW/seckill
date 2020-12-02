@@ -9,6 +9,7 @@ import com.ghost.seckill.service.UserService;
 import com.ghost.seckill.service.model.UserModel;
 import com.ghost.seckill.validator.ValidationResult;
 import com.ghost.seckill.validator.ValidatorImpl;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
@@ -76,11 +77,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserModel validateLogin(String telphone, String password) throws BusinessException {
+    public UserModel validateLogin(String telphone, String encrptPassword) throws BusinessException {
          //通过用户的手机获取用户信息
-        UserDO userDO = userDOMapper.selectBytelphone(telphone);
+        UserDO userDO = userDOMapper.selectByTelphone(telphone);
         if(userDO == null){
-            throw new BusinessException("用户名或密码错误");
+            throw new BusinessException(EmBusinessError.USER_LOGIN_FAIL);
         }
         UserPasswordDo userPasswordDo = userPasswordDoMapper.selectByUserId(userDO.getId());
         if (userPasswordDo == null){
@@ -88,7 +89,7 @@ public class UserServiceImpl implements UserService {
         }
         UserModel userModel = convertFromDataObject(userDO, userPasswordDo);
         //比对用户信息内加密的密码是否和传输进来的密码相匹配
-        if(!userPasswordDo.getEncrptPassword().equals(password)){
+        if(!StringUtils.equals(encrptPassword,userModel.getEncrptPassword())){
             throw new BusinessException("用户名或密码错误");
         }
         return userModel;

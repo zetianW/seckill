@@ -29,9 +29,9 @@ public interface UserService {
      * 验证登录
      *
      * @param telphone
-     * @param password
+     * @param encrptPassword
      * @return
      * @throws BusinessException
      */
-    UserModel validateLogin(String telphone, String password) throws BusinessException;
+    UserModel validateLogin(String telphone, String encrptPassword) throws BusinessException;
 }

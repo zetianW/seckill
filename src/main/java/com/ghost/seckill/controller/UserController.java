@@ -61,7 +61,7 @@ public class UserController extends BaseController {
         // 在一般程序开发中，不能将这些otpCode等敏感信息打印到控制台，此处打印时为了方便查看
         System.out.println("telphone =" + telphone + "****otpCode = " + otpCode);
 
-        return CommonReturnType.creat(null);
+        return CommonReturnType.create(null);
     }
 
     /**
@@ -93,12 +93,11 @@ public class UserController extends BaseController {
         userModel.setRegisterMode("byPhone");
         userModel.setEncrptPassword(this.encodeByMd5(password));
         userService.register(userModel);
-        return CommonReturnType.creat(null);
+        return CommonReturnType.create(null);
     }
 
     /**
-     * 用户接口登录
-     *
+     * 用户登录页面接口
      * @param telphone
      * @param password
      * @return
@@ -108,23 +107,23 @@ public class UserController extends BaseController {
      */
     @RequestMapping(value = "/login", method = {RequestMethod.POST}, consumes = {CONTENT_TYPE_FORMED})
     @ResponseBody
-    public CommonReturnType login(@RequestParam("telphone") String telphone,
-                                  @RequestParam("password") String password) throws BusinessException, UnsupportedEncodingException, NoSuchAlgorithmException {
-        //校验入参
-        if (telphone == null || "".equals(telphone)) {
+    public CommonReturnType login(@RequestParam(name = "telphone") String telphone,
+                                  @RequestParam(name = "password") String password) throws BusinessException, UnsupportedEncodingException, NoSuchAlgorithmException {
+        //入参校验
+        if (StringUtils.isEmpty(telphone) || StringUtils.isEmpty(password)) {
             throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR);
         }
 
-        if (password == null || "".equals(password)) {
-            throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR);
-        }
         //用户登录服务，用来校验用户登录是否合法
+        //用户加密后的密码
         UserModel userModel = userService.validateLogin(telphone, this.encodeByMd5(password));
-        //将登录凭证加入到用户登录成功的session中
-        httpServletRequest.getSession().setAttribute("IS_LOGIN", true);
 
-        httpServletRequest.getSession().setAttribute("LOGIN_USER", userModel);
-        return CommonReturnType.creat(null);
+        //将登陆凭证加入到用户登录成功的session内
+        this.httpServletRequest.getSession().setAttribute("IS_LOGIN", true);
+        this.httpServletRequest.getSession().setAttribute("LOGIN_USER", userModel);
+
+        return CommonReturnType.create(null);
+
     }
 
     @RequestMapping("/get")
@@ -141,7 +140,7 @@ public class UserController extends BaseController {
         //将核心领域模型用户对象转化为可供UI使用的viewObject
         UserView userView = convertFromModel(userModel);
         //返回通用对象
-        return CommonReturnType.creat(userView);
+        return CommonReturnType.create(userView);
     }
 
     private UserView convertFromModel(UserModel userModel) {

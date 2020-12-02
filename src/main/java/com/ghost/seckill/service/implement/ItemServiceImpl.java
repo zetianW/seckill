@@ -8,6 +8,8 @@ import com.ghost.seckill.error.BusinessException;
 import com.ghost.seckill.error.EmBusinessError;
 import com.ghost.seckill.itemmodel.ItemModel;
 import com.ghost.seckill.service.ItemService;
+import com.ghost.seckill.service.PromoService;
+import com.ghost.seckill.service.model.PromoModel;
 import com.ghost.seckill.validator.ValidationResult;
 import com.ghost.seckill.validator.ValidatorImpl;
 import org.springframework.beans.BeanUtils;
@@ -34,6 +36,8 @@ public class ItemServiceImpl implements ItemService {
     @Resource
     private ItemDOMapper itemDOMapper;
 
+    @Resource
+    private PromoService promoService;
     @Resource
     private ItemStockDOMapper itemStockDOMapper;
 
@@ -108,8 +112,40 @@ public class ItemServiceImpl implements ItemService {
         //将dataObject->model
         ItemModel itemModel = convertItemDOFromDataObject(itemDO, itemStockDO);
 
+        //获取活动商品信息(模型聚合)
+        PromoModel promoModel = promoService.getPromoByItemId(itemModel.getId());
+        if(promoModel !=null && promoModel.getStatus().intValue() !=3){
+            itemModel.setPromoModel(promoModel);
+        }
         return itemModel;
     }
+
+    @Override
+    public boolean decreaseStock(Integer itemId, Integer amount) {
+
+        int affectedRow = 0;
+
+        try {
+            affectedRow = itemStockDOMapper.decreaseStock(itemId, amount);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if (affectedRow > 0) {
+            //更新库存成功
+            return true;
+        } else {
+            //更新库存失败
+            return false;
+        }
+    }
+
+    @Override
+    @Transactional
+    public void increaseSales(Integer itemId, Integer amount) {
+        itemDOMapper.increaseSales(itemId, amount);
+    }
+
 
     /**
      * @param itemDO
@@ -119,7 +155,7 @@ public class ItemServiceImpl implements ItemService {
     private ItemModel convertItemDOFromDataObject(ItemDO itemDO, ItemStockDO itemStockDO) {
         ItemModel itemModel = new ItemModel();
         BeanUtils.copyProperties(itemDO, itemModel);
-        itemModel.setPrice(new BigDecimal(itemDO.getId()));
+        itemModel.setPrice(BigDecimal.valueOf(itemDO.getPrice()));
         itemModel.setStock(itemStockDO.getStock());
 
         return itemModel;

@@ -5,7 +5,6 @@ import com.ghost.seckill.error.BusinessException;
 import com.ghost.seckill.itemmodel.ItemModel;
 import com.ghost.seckill.response.CommonReturnType;
 import com.ghost.seckill.service.ItemService;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -50,7 +49,7 @@ public class ItemController extends BaseController {
          */
         ItemModel itemModel = new ItemModel();
         itemModel.setTitle(title);
-        itemModel.setDescriptin(description);
+        itemModel.setDescription(description);
         itemModel.setPrice(price);
         itemModel.setStock(stock);
         itemModel.setImgUrl(imgUrl);
@@ -59,7 +58,7 @@ public class ItemController extends BaseController {
 
         ItemView itemView = convertViewFromModel(itemModelForReturn);
 
-        return CommonReturnType.creat(itemView);
+        return CommonReturnType.create(itemView);
     }
 
     /**
@@ -72,7 +71,7 @@ public class ItemController extends BaseController {
     public CommonReturnType getItem(@RequestParam(name = "id") Integer id) {
         ItemModel itemModel = itemService.getItemById(id);
         ItemView itemView = convertViewFromModel(itemModel);
-        return CommonReturnType.creat(itemView);
+        return CommonReturnType.create(itemView);
     }
 
     /**
@@ -92,8 +91,8 @@ public class ItemController extends BaseController {
             ItemView itemView = this.convertViewFromModel(itemModel);
             itemViewList.add(itemView);
         }
-        System.out.println(itemViewList);
-        return CommonReturnType.creat(itemViewList);
+
+        return CommonReturnType.create(itemViewList);
 
     }
 
@@ -102,7 +101,23 @@ public class ItemController extends BaseController {
             return null;
         }
         ItemView itemView = new ItemView();
-        BeanUtils.copyProperties(itemModel, itemView);
+        itemView.setDescription(itemModel.getDescription());
+        itemView.setImgUrl(itemModel.getImgUrl());
+        itemView.setId(itemModel.getId());
+        itemView.setPrice(itemModel.getPrice());
+        itemView.setSale(itemModel.getSale());
+        itemView.setStock(itemModel.getStock());
+        itemView.setTitle(itemModel.getTitle());
+        //判断当前是否有秒杀活动开始
+        if(itemModel.getPromoModel() != null){
+            itemView.setPromoStatus(itemModel.getPromoModel().getStatus());
+            itemView.setPromoId(itemModel.getPromoModel().getId());
+            itemView.setStartDate(itemModel.getPromoModel().getStartDate());
+            itemView.setPromoPrice(itemModel.getPromoModel().getPromoItemPrice());
+        }else {
+            itemView.setPromoStatus(0);
+        }
+
         return itemView;
     }
 }
