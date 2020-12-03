@@ -87,12 +87,12 @@ public class UserServiceImpl implements UserService {
         if (userPasswordDo == null){
             throw new BusinessException("用户名或密码错误");
         }
-        UserModel userModel = convertFromDataObject(userDO, userPasswordDo);
         //比对用户信息内加密的密码是否和传输进来的密码相匹配
-        if(!StringUtils.equals(encrptPassword,userModel.getEncrptPassword())){
+        if(!StringUtils.equals(encrptPassword,userPasswordDo.getEncrptPassword())){
             throw new BusinessException("用户名或密码错误");
         }
-        return userModel;
+
+        return convertFromDataObject(userDO, userPasswordDo);
     }
 
     private UserPasswordDo toPasswordDO(UserModel userModel) {
