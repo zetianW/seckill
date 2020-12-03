@@ -43,6 +43,7 @@ public class UserServiceImpl implements UserService {
         if (userDo == null) {
             return null;
         }
+
         //通过用户id获取对应的用户加密密码信息
         UserPasswordDo userPasswordDo = userPasswordDoMapper.selectByUserId(userDo.getId());
         return convertFromDataObject(userDo, userPasswordDo);
