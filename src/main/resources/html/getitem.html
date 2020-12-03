@@ -65,7 +65,7 @@
 </body>
 
 <script>
-    var g_ItemView = {};
+    var g_itemView = {};
     $(document).ready(function() {
         // 获取商品详情
         $.ajax({
@@ -79,7 +79,7 @@
             },
             success: function(data) {
                 if (data.status == "success") {
-                    g_ItemView = data.data;
+                    g_itemView = data.data;
                     reloadDom();
                     setInterval(reloadDom, 1000);
                 } else {
@@ -96,20 +96,20 @@
                 url: "http://localhost:8080/order/createorder",
                 contentType: "application/x-www-form-urlencoded",
                 data: {
-                    "itemId": g_ItemView.id,
-                    "promoId": g_ItemView.promoId,
+                    "itemId": g_itemView.id,
+                    "promoId": g_itemView.promoId,
                     "amount": 1,//暂时写死为一件
                 },
                 xhrFields:{
                     withCredentials:true
                 },
                 success: function(data) {
-                    if (data.status === "success") {
+                    if (data.status == "success") {
                         alert("下单成功");
                         window.location.reload();
                     } else {
                         alert("下单失败，原因为" + data.data.errMsg);
-                        if (data.data.errCode === 20003) {
+                        if (data.data.errCode == 20003) {
                             window.location.href="login.html";
                         }
                     }
@@ -121,43 +121,43 @@
         });
     });
     function reloadDom() {
-        $("#title").text(g_ItemView.title);
-        $("#imgUrl").attr("src", g_ItemView.imgUrl);
-        $("#description").text(g_ItemView.description);
-        $("#price").text(g_ItemView.price);
-        $("#stock").text(g_ItemView.stock);
-        $("#sales").text(g_ItemView.sales);
-        if (g_ItemView.promoStatus === 1) {
+        $("#title").text(g_itemView.title);
+        $("#imgUrl").attr("src", g_itemView.imgUrl);
+        $("#description").text(g_itemView.description);
+        $("#price").text(g_itemView.price);
+        $("#stock").text(g_itemView.stock);
+        $("#sales").text(g_itemView.sales);
+        if (g_itemView.promoStatus == 1) {
             // 秒杀活动还未开始
-            console.log(g_ItemView.startDate);
-            var startTime = g_ItemView.startDate.replace(new RegExp("-", "gm"), "/");
+            console.log(g_itemView.startDate);
+            var startTime = g_itemView.startDate.replace(new RegExp("-", "gm"), "/");
             startTime = (new Date(startTime)).getTime();
             var nowTime = Date.parse(new Date());
             var delta = (startTime - nowTime) / 1000;
             if (delta <= 0) {
                 // 活动开始了
-                g_ItemView.promoStatus = 2;
+                g_itemView.promoStatus = 2;
                 reloadDom();
             }
-            $("#promoStartDate").text("秒杀活动将于："+g_ItemView.startDate+" 开始售卖 倒计时："+delta+"  秒");
-            $("#promoPrice").text(g_ItemView.promoPrice);
+            $("#promoStartDate").text("秒杀活动将于："+g_itemView.startDate+" 开始售卖 倒计时："+delta+"  秒");
+            $("#promoPrice").text(g_itemView.promoPrice);
             $("#createOrder").attr("disabled", true);
-        } else if (g_ItemView.promoStatus === 2) {
+        } else if (g_itemView.promoStatus == 2) {
             // 秒杀活动进行中
             $("#promoStartDate").text("秒杀正在进行中");
-            $("#promoPrice").text(g_ItemView.promoPrice);
+            $("#promoPrice").text(g_itemView.promoPrice);
             $("#createOrder").attr("disabled", false);
             $("#normalPriceContainer").hide();
         }
     }
     function getParam(paramName) {
         paramValue = "", isFound = !1;
-        if (this.location.search.indexOf("?") === 0 && this.location.search.indexOf("=") > 1) {
+        if (this.location.search.indexOf("?") == 0 && this.location.search.indexOf("=") > 1) {
             arrSource = unescape(this.location.search).substring(1, this.location.search.length).split("&"), i = 0;
             while (i < arrSource.length && !isFound)
-                arrSource[i].indexOf("=") > 0 && arrSource[i].split("=")[0].toLowerCase() === paramName.toLowerCase() && (paramValue = arrSource[i].split("=")[1], isFound = !0), i++
+                arrSource[i].indexOf("=") > 0 && arrSource[i].split("=")[0].toLowerCase() == paramName.toLowerCase() && (paramValue = arrSource[i].split("=")[1], isFound = !0), i++
         }
-        return paramValue === "" && (paramValue = null), paramValue
+        return paramValue == "" && (paramValue = null), paramValue
     }
 </script>
 

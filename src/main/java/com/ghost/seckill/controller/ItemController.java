@@ -5,6 +5,8 @@ import com.ghost.seckill.error.BusinessException;
 import com.ghost.seckill.itemmodel.ItemModel;
 import com.ghost.seckill.response.CommonReturnType;
 import com.ghost.seckill.service.ItemService;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -112,7 +114,7 @@ public class ItemController extends BaseController {
         if(itemModel.getPromoModel() != null){
             itemView.setPromoStatus(itemModel.getPromoModel().getStatus());
             itemView.setPromoId(itemModel.getPromoModel().getId());
-            itemView.setStartDate(itemModel.getPromoModel().getStartDate());
+            itemView.setStartDate(itemModel.getPromoModel().getStartDate().toString(DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")));
             itemView.setPromoPrice(itemModel.getPromoModel().getPromoItemPrice());
         }else {
             itemView.setPromoStatus(0);

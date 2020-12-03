@@ -24,7 +24,15 @@ public class PromoServiceImpl implements PromoService {
 
     @Override
     public PromoModel getPromoByItemId(Integer itemId) {
-        PromoDO promoDO = promoDOMapper.selectByItemId(itemId);
+
+        PromoDO promoDO = null;
+
+        try{
+            promoDO = promoDOMapper.selectByItemId(itemId);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
 
         //dataObject->model
         PromoModel promoModel = convertFromDataObject(promoDO);

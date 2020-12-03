@@ -63,7 +63,7 @@ public class ItemView {
      * 秒杀活动开始时间
      * @return
      */
-    private DateTime startDate;
+    private String startDate;
 
     public Integer getPromoStatus() {
         return promoStatus;
@@ -89,11 +89,11 @@ public class ItemView {
         this.promoId = promoId;
     }
 
-    public DateTime getStartDate() {
+    public String getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(DateTime startDate) {
+    public void setStartDate(String startDate) {
         this.startDate = startDate;
     }
 

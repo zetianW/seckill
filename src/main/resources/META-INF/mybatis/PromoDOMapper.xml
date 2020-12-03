@@ -12,7 +12,7 @@
     <result column="start_date" jdbcType="TIMESTAMP" property="startDate" />
     <result column="item_id" jdbcType="INTEGER" property="itemId" />
     <result column="promo_item_price" jdbcType="DOUBLE" property="promoItemPrice" />
-    <result column="end_date" jdbcType="DOUBLE" property="endDate" />
+    <result column="end_date" jdbcType="TIMESTAMP" property="endDate" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--
