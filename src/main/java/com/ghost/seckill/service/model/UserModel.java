@@ -18,7 +18,7 @@ public class UserModel {
     @NotNull(message = "性别为空")
     private Byte gender;
     @NotNull(message = "年龄为空")
-    @Min(value = 0,message = "年龄不饿能小于0")
+    @Min(value = 0,message = "年龄不能小于0")
     @Max(value = 100,message = "年龄不能大于100")
     private Integer age;
     @NotBlank(message = "手机号不能为空")
